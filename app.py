@@ -102,7 +102,7 @@ facet = px.box(gss_sub.sort_values('prest_bin'), x='income', y = 'sex', color = 
 facet.update_layout(showlegend=False)
 
 
-app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 feats = ['satjob', 'relationship', 'male_breadwinner', 'men_bettersuited', 'child_suffer', 'men_overwork']
 y_feats = ['sex', 'region', 'education']
 
