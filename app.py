@@ -103,6 +103,7 @@ facet.update_layout(showlegend=False)
 
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 feats = ['satjob', 'relationship', 'male_breadwinner', 'men_bettersuited', 'child_suffer', 'men_overwork']
 y_feats = ['sex', 'region', 'education']
 
