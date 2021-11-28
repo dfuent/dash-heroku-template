@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import dash
-from jupyter_dash import JupyterDash
+#from jupyter_dash import JupyterDash
 #import dash_core_components as dcc
 from dash import dcc # changed line above to this one
 import dash_html_components as html
