@@ -69,7 +69,7 @@ gss_group = gss_clean.groupby(['sex', 'male_breadwinner']).agg({'id':'size'}).re
 bar = px.bar(gss_group, x='male_breadwinner', y='Count', color='Sex',
             labels={'male_breadwinner':'It is better for the husband to be sole breadwinner', 'Count':'Count Responses'},
             text='Count',
-            barmode = 'group')
+            barmode = 'group', color_discrete_map = {'male':'cornflowerblue', 'female':'coral'})
 bar.update_layout(showlegend=True)
 bar.update(layout=dict(title=dict(x=0.5)))
 
@@ -78,17 +78,19 @@ scatter = px.scatter(gss_clean, x='job_prestige', y='income', color = 'sex',
                  height=600, width=600,
                  trendline='ols',
                  hover_data={'education': True, 'socioeconomic_index': True},
-                 range_x = [0, 100]
+                 range_x = [0, 100], color_discrete_map = {'male':'cornflowerblue', 'female':'coral'}
                 )
 # could adjust the hover_data dictionary to include the other columns with False if I 
 # wanted to remove Sex, Income, and Job Prestige
 
 box1 = px.box(gss_clean, x='income', y = 'sex', color = 'sex',
-                   labels={'income':'Annual Income (USD)', 'sex':''})
+                   labels={'income':'Annual Income (USD)', 'sex':''},
+             color_discrete_map = {'male':'cornflowerblue', 'female':'coral'})
 box1.update_layout(showlegend=False)
 
 box2 = px.box(gss_clean, x='job_prestige', y = 'sex', color = 'sex',
-                   labels={'job_prestige':'Job Prestige Index', 'sex':''})
+                   labels={'job_prestige':'Job Prestige Index', 'sex':''},
+             color_discrete_map = {'male':'cornflowerblue', 'female':'coral'})
 box2.update_layout(showlegend=False)
 
 gss_sub = gss_clean[['income', 'sex', 'job_prestige']]
@@ -102,22 +104,46 @@ facet = px.box(gss_sub.sort_values('prest_bin'), x='income', y = 'sex', color = 
 facet.update_layout(showlegend=False)
 
 
+#app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 feats = ['satjob', 'relationship', 'male_breadwinner', 'men_bettersuited', 'child_suffer', 'men_overwork']
 y_feats = ['sex', 'region', 'education']
 
 app.layout = html.Div(
-    [
+    children = [
         html.H1("General Social Survey (GSS) Exploration", style={
+            'textAlign': 'left', 'color': 'blue', 'padding': '10px', 'backgroundColor': 'cornflowerblue'}),
+        dcc.Markdown(children = markdown_text, style = {'backgroundColor': 'whitesmoke'}),
+            
+        html.Div([
+            
+            html.H4("Table 1: Average Features by Sex", style={
             'textAlign': 'center'}),
-        dcc.Markdown(children = markdown_text),
-        html.H3("Table 1: Average Features by Sex"),
-        dcc.Graph(figure=table),    
-        html.H3("Figure 1: Responses to The Idea That Men Should Be A Family's Sole Earner"),
-        dcc.Graph(figure=bar),  
-        html.H3("Figure 2: Relationship between Annual Income, Job Prestige, and Sex"),
-        dcc.Graph(figure=scatter),
+            
+            dcc.Graph(figure=table)
+            
+        ], style = {'width':'70%', 'align': 'center', 'margin-left': 'auto','margin-right': 'auto', 'margin-bottom': '20px'}),
+
+        html.Div([
+            
+            html.H4("Figure 1: Annual Income by Job Prestige Bin and Sex", style={
+            'textAlign': 'center'}),
+            
+            dcc.Graph(figure=facet)
+            
+        ], style = {'width':'48%', 'float':'left'}),
+        
+        html.Div([
+            
+            html.H4("Figure 2: Annual Income and Job Prestige by Sex", style={
+            'textAlign': 'center'}),
+            
+            dcc.Graph(figure=scatter)
+            
+        ], style = {'width':'48%', 'float':'right'}),
+        
         
         html.Div([
             
@@ -136,15 +162,11 @@ app.layout = html.Div(
             dcc.Graph(figure=box2)
             
         ], style = {'width':'48%', 'float':'right'}),
-        html.H3("Figure 4: Annual Income by Job Prestige Bin and Sex"),
-        dcc.Graph(figure=facet),  
+                
         
         
-        
-        html.H3("Figure 5: Interactive Bar Plot"),
-        
-        html.Div([
-            
+        html.Div(children = [
+            html.H3("Figure 4: Interactive Bar Plot"),
             html.H3("X-axis feature"),
             
             dcc.Dropdown(id='x-axis',
@@ -163,7 +185,10 @@ app.layout = html.Div(
             
             dcc.Graph(id="graph")
         
-        ], style={'width': '70%', 'float': 'right'})
+        ], style={'width': '70%', 'float': 'right', 'background_color': 'wheat', "border":"2px wheat solid"}),
+
+
+       
     
     ]
 )
@@ -174,10 +199,11 @@ app.layout = html.Div(
 def make_figure(x, color):
     gss_group = gss_clean.groupby([color, x]).agg({'id':'size'}).reset_index().rename({'id': 'Count'}, axis = 1)
     return px.bar(gss_group, x=x, y='Count', color=color,
-            #labels={'male_breadwinner':'It is better for the husband to be sole breadwinner', 'Count':'Count Responses'},
-            text='Count',
+            text='Count', color_discrete_map = {'male':'cornflowerblue', 'female':'coral'},
             barmode = 'group')
 
 
+
 if __name__ == '__main__':
+    #app.run_server(mode='inline', debug=True, port=8022)
     app.run_server(debug=True)
