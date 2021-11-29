@@ -133,7 +133,7 @@ app.layout = html.Div(
             
             dcc.Graph(figure=facet)
             
-        ], style = {'width':'48%', 'float':'left'}),
+        ], style = {'width':'40%', 'float':'left'}),
         
         html.Div([
             
