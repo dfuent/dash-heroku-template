@@ -197,9 +197,18 @@ app.layout = html.Div(
                    Input(component_id='color',component_property="value")])
 
 def make_figure(x, color):
+  
+     questions = {'satjob': "On the whole, how satisfied are you with the work you do?",
+      'relationship': "A working mother can establish just as warm and secure a relationship with her children as a mother who does not work",
+      'male_breadwinner': "It is much better for everyone involved if the man is the achiever outside the home and the woman takes care of the home and family",
+      'men_bettersuited': "Most men are better suited emotionally for politics than are most women",
+      'child_suffer': "A preschool child is likely to suffer if his or her mother works",
+      'men_overwork': "Family life often suffers because men concentrate too much on their work"}   
+  
     gss_group = gss_clean.groupby([color, x]).agg({'id':'size'}).reset_index().rename({'id': 'Count'}, axis = 1)
     return px.bar(gss_group, x=x, y='Count', color=color,
             text='Count', color_discrete_map = {'male':'cornflowerblue', 'female':'coral'},
+            title= questions[x],
             barmode = 'group')
 
 
