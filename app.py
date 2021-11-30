@@ -142,7 +142,7 @@ app.layout = html.Div(
             
             dcc.Graph(figure=scatter)
             
-        ], style = {'width':'54%', 'float':'right'}),
+        ], style = {'width':'48%', 'float':'right'}),
         
         
         html.Div([
